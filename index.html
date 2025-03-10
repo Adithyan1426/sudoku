@@ -55,27 +55,76 @@
 <body>
     <div class="container">
         <h2>Sudoku Game</h2>
-        <table>
-            <tbody>
-                <script>
-                    for (let i = 0; i < 9; i++) {
-                        document.write('<tr>');
-                        for (let j = 0; j < 9; j++) {
-                            document.write(`<td><input type="text" maxlength="1"></td>`);
-                        }
-                        document.write('</tr>');
-                    }
-                </script>
-            </tbody>
+        <table id="sudoku-board">
         </table>
         <button onclick="checkSudoku()">Check Solution</button>
+        <button onclick="getHint()">Get Hint</button>
         <p id="message"></p>
     </div>
     <script>
-        function checkSudoku() {
-            let message = document.getElementById("message");
-            message.innerText = "Feature coming soon!";
+        let solution = [
+            [5,3,4,6,7,8,9,1,2],
+            [6,7,2,1,9,5,3,4,8],
+            [1,9,8,3,4,2,5,6,7],
+            [8,5,9,7,6,1,4,2,3],
+            [4,2,6,8,5,3,7,9,1],
+            [7,1,3,9,2,4,8,5,6],
+            [9,6,1,5,3,7,2,8,4],
+            [2,8,7,4,1,9,6,3,5],
+            [3,4,5,2,8,6,1,7,9]
+        ];
+
+        function generateBoard() {
+            let board = document.getElementById("sudoku-board");
+            board.innerHTML = "";
+            for (let i = 0; i < 9; i++) {
+                let row = document.createElement("tr");
+                for (let j = 0; j < 9; j++) {
+                    let cell = document.createElement("td");
+                    let input = document.createElement("input");
+                    input.type = "text";
+                    input.maxLength = 1;
+                    input.dataset.row = i;
+                    input.dataset.col = j;
+                    if (Math.random() < 0.4) {
+                        input.value = solution[i][j];
+                        input.disabled = true;
+                    }
+                    cell.appendChild(input);
+                    row.appendChild(cell);
+                }
+                board.appendChild(row);
+            }
         }
+
+        function checkSudoku() {
+            let inputs = document.querySelectorAll("input");
+            let isCorrect = true;
+            inputs.forEach(input => {
+                let row = input.dataset.row;
+                let col = input.dataset.col;
+                if (!input.disabled && input.value != solution[row][col]) {
+                    isCorrect = false;
+                    input.style.backgroundColor = "#ffcccc";
+                } else {
+                    input.style.backgroundColor = "#ccffcc";
+                }
+            });
+            document.getElementById("message").innerText = isCorrect ? "🎉 Correct solution!" : "❌ Some numbers are incorrect.";
+        }
+
+        function getHint() {
+            let emptyCells = Array.from(document.querySelectorAll("input:not([disabled])")).filter(input => input.value === "");
+            if (emptyCells.length > 0) {
+                let randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                let row = randomCell.dataset.row;
+                let col = randomCell.dataset.col;
+                randomCell.value = solution[row][col];
+                randomCell.disabled = true;
+            }
+        }
+
+        generateBoard();
     </script>
 </body>
 </html>
