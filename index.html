@@ -8,7 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background: url('vichu.png') no-repeat center center fixed;
+            background: url('https://source.unsplash.com/1600x900/?abstract') no-repeat center center fixed;
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -23,6 +23,12 @@
             background: rgba(255, 255, 255, 0.8);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+        }
+        .image-adjust {
+            margin-top: 10px;
+        }
+        input[type='range'] {
+            width: 300px;
         }
         table {
             border-collapse: collapse;
@@ -60,11 +66,14 @@
 <body>
     <div class="container">
         <h2>Sudoku Game</h2>
-        <table id="sudoku-board">
-        </table>
+        <table id="sudoku-board"></table>
         <button onclick="checkSudoku()">Check Solution</button>
         <button onclick="getHint()">Get Hint</button>
         <p id="message"></p>
+        <div class="image-adjust">
+            <label for="bg-size">Adjust Background Size:</label>
+            <input type="range" id="bg-size" min="50" max="200" value="100" oninput="adjustBackgroundSize(this.value)">
+        </div>
     </div>
     <script>
         let solution = [
@@ -129,9 +138,12 @@
             }
         }
 
+        function adjustBackgroundSize(value) {
+            document.body.style.backgroundSize = value + "%";
+        }
+
         generateBoard();
     </script>
 </body>
 </html>
-
 
