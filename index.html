@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin: 50px auto;
+            padding: 20px;
+            max-width: 500px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        table {
+            border-collapse: collapse;
+            margin: 0 auto;
+        }
+        td {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            border: 1px solid #000;
+        }
+        input {
+            width: 38px;
+            height: 38px;
+            text-align: center;
+            font-size: 18px;
+            border: none;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Sudoku Game</h2>
+        <table>
+            <tbody>
+                <script>
+                    for (let i = 0; i < 9; i++) {
+                        document.write('<tr>');
+                        for (let j = 0; j < 9; j++) {
+                            document.write(`<td><input type="text" maxlength="1"></td>`);
+                        }
+                        document.write('</tr>');
+                    }
+                </script>
+            </tbody>
+        </table>
+        <button onclick="checkSudoku()">Check Solution</button>
+        <p id="message"></p>
+    </div>
+    <script>
+        function checkSudoku() {
+            let message = document.getElementById("message");
+            message.innerText = "Feature coming soon!";
+        }
+    </script>
+</body>
+</html>
