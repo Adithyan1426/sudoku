@@ -62,8 +62,9 @@
         .image-adjust {
             margin-top: 10px;
         }
-        input[type='range'] {
-            width: 300px;
+        input[type='range'], input[type='number'] {
+            width: 100px;
+            margin-left: 10px;
         }
         .incorrect {
             background-color: #ffcccc;
@@ -94,6 +95,7 @@
         <div class="image-adjust">
             <label for="bg-size">Adjust Background Size:</label>
             <input type="range" id="bg-size" min="50" max="200" value="100" oninput="adjustBackgroundSize(this.value)">
+            <input type="number" id="bg-size-manual" min="50" max="200" value="100" oninput="adjustBackgroundSize(this.value)">
         </div>
     </div>
     <script>
@@ -155,22 +157,15 @@
             }
         }
 
-        function checkSudoku() {
-            clearInterval(timer);
-            document.getElementById("message").innerText = `Game Over! Your score: ${Math.max(100 - Math.floor(seconds / 2), 0)}`;
-        }
-
-        function resetGame() {
-            generateBoard();
-        }
-
-        function toggleMusic() {
-            let music = document.getElementById("background-music");
-            music.paused ? music.play() : music.pause();
+        function adjustBackgroundSize(value) {
+            document.body.style.backgroundSize = value + "%";
+            document.getElementById("bg-size-manual").value = value;
+            document.getElementById("bg-size").value = value;
         }
 
         generateBoard();
     </script>
 </body>
 </html>
+
 
