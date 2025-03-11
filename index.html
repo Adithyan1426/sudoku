@@ -112,6 +112,10 @@
                     input.oninput = function() {
                         this.value = this.value.replace(/[^1-9]/g, "");
                     };
+                    if (Math.random() < 0.4) {
+                        input.value = solution[i][j];
+                        input.disabled = true;
+                    }
                     cell.appendChild(input);
                     row.appendChild(cell);
                 }
@@ -125,7 +129,7 @@
             inputs.forEach(input => {
                 let row = input.dataset.row;
                 let col = input.dataset.col;
-                if (input.value != solution[row][col]) {
+                if (!input.disabled && input.value != solution[row][col]) {
                     isCorrect = false;
                     input.classList.add("incorrect");
                 } else {
@@ -136,7 +140,7 @@
         }
 
         function getHint() {
-            let emptyCells = Array.from(document.querySelectorAll("input")).filter(input => input.value === "");
+            let emptyCells = Array.from(document.querySelectorAll("input:not([disabled])")).filter(input => input.value === "");
             if (emptyCells.length > 0) {
                 let randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
                 let row = randomCell.dataset.row;
@@ -153,25 +157,14 @@
 
         function adjustBackgroundSize(value) {
             document.body.style.backgroundSize = value + "%";
-            document.getElementById("bg-size-manual").value = value;
-            document.getElementById("bg-size").value = value;
         }
 
         function toggleMusic() {
             let music = document.getElementById("bg-music");
-            if (music.paused) {
-                music.play();
-            } else {
-                music.pause();
-            }
+            music.paused ? music.play() : music.pause();
         }
 
         generateBoard();
     </script>
 </body>
 </html>
-
-</body>
-</html>
-
-
