@@ -75,10 +75,13 @@
         <input type="range" id="bg-size" min="50" max="200" value="100" oninput="adjustBackgroundSize(this.value)">
         <input type="number" id="bg-size-manual" min="50" max="200" value="100" oninput="adjustBackgroundSize(this.value)">
     </div>
+
+    <!-- Background Music -->
     <audio id="bg-music" loop>
-        <source src="background-music.mp3" type="audio/mpeg">
+        <source src="Interstellar Main Theme.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
+
     <script>
         let solution = [
             [5,3,4,6,7,8,9,1,2], [6,7,2,1,9,5,3,4,8], [1,9,8,3,4,2,5,6,7],
@@ -160,8 +163,12 @@
         }
 
         function toggleMusic() {
-            let music = document.getElementById("Interstellar Main Theme.mp4");
-            music.paused ? music.play() : music.pause();
+            let music = document.getElementById("bg-music");
+            if (music.paused) {
+                music.play();
+            } else {
+                music.pause();
+            }
         }
 
         generateBoard();
