@@ -59,9 +59,19 @@
         .bold-border {
             border-width: 2px !important;
         }
+        .image-adjust {
+            margin-top: 10px;
+        }
+        input[type='range'] {
+            width: 300px;
+        }
     </style>
 </head>
 <body>
+    <audio id="background-music" loop>
+        <source src="song.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
     <div class="container">
         <h2>Sudoku Game</h2>
         <p>Time: <span id="timer">0:00</span></p>
@@ -75,7 +85,12 @@
         <button onclick="checkSudoku()">Check Solution</button>
         <button onclick="getHint()">Get Hint</button>
         <button onclick="resetGame()">Reset</button>
+        <button onclick="toggleMusic()">Play/Pause Music</button>
         <p id="message"></p>
+        <div class="image-adjust">
+            <label for="bg-size">Adjust Background Size:</label>
+            <input type="range" id="bg-size" min="50" max="200" value="100" oninput="adjustBackgroundSize(this.value)">
+        </div>
     </div>
     <script>
         let solution = [
@@ -133,31 +148,21 @@
             }
         }
 
-        function checkSudoku() {
-            let isCorrect = true;
-            document.querySelectorAll("input").forEach(input => {
-                let row = input.dataset.row, col = input.dataset.col;
-                if (!input.disabled && input.value != solution[row][col]) {
-                    isCorrect = false;
-                    input.style.backgroundColor = "#ffcccc";
-                } else {
-                    input.style.backgroundColor = "#ccffcc";
-                }
-            });
-            document.getElementById("message").innerText = isCorrect ? "🎉 Correct solution!" : "❌ Some numbers are incorrect.";
-        }
-
-        function getHint() {
-            let emptyCells = Array.from(document.querySelectorAll("input:not([disabled])")).filter(input => input.value === "");
-            if (emptyCells.length > 0) {
-                let randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-                randomCell.value = solution[randomCell.dataset.row][randomCell.dataset.col];
-                randomCell.disabled = true;
-            }
+        function adjustBackgroundSize(value) {
+            document.body.style.backgroundSize = value + "%";
         }
 
         function resetGame() {
             generateBoard();
+        }
+
+        function toggleMusic() {
+            let music = document.getElementById("background-music");
+            if (music.paused) {
+                music.play();
+            } else {
+                music.pause();
+            }
         }
 
         generateBoard();
