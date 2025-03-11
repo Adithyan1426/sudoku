@@ -56,48 +56,29 @@
         button:hover {
             background: #0056b3;
         }
-        .bold-border {
-            border-width: 2px !important;
-        }
-        .image-adjust {
-            margin-top: 10px;
-        }
-        input[type='range'], input[type='number'] {
-            width: 100px;
-            margin-left: 10px;
-        }
         .incorrect {
             background-color: #ffcccc;
         }
     </style>
 </head>
 <body>
-    <audio id="background-music" loop>
-        <source src="song.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
     <div class="container">
         <h2>Sudoku Game</h2>
         <p>Time: <span id="timer">0:00</span></p>
-        <p>Score: <span id="score">100</span></p>
-        <label for="difficulty">Difficulty:</label>
-        <select id="difficulty" onchange="generateBoard()">
-            <option value="easy">Easy</option>
-            <option value="medium" selected>Medium</option>
-            <option value="hard">Hard</option>
-        </select>
         <table id="sudoku-board"></table>
         <button onclick="checkSudoku()">Check Solution</button>
         <button onclick="getHint()">Get Hint</button>
         <button onclick="resetGame()">Reset</button>
         <button onclick="toggleMusic()">Play/Pause Music</button>
         <p id="message"></p>
-        <div class="image-adjust">
-            <label for="bg-size">Adjust Background Size:</label>
-            <input type="range" id="bg-size" min="50" max="200" value="100" oninput="adjustBackgroundSize(this.value)">
-            <input type="number" id="bg-size-manual" min="50" max="200" value="100" oninput="adjustBackgroundSize(this.value)">
-        </div>
+        <label for="bg-size">Adjust Background Size:</label>
+        <input type="range" id="bg-size" min="50" max="200" value="100" oninput="adjustBackgroundSize(this.value)">
+        <input type="number" id="bg-size-manual" min="50" max="200" value="100" oninput="adjustBackgroundSize(this.value)">
     </div>
+    <audio id="bg-music" loop>
+        <source src="background-music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
     <script>
         let solution = [
             [5,3,4,6,7,8,9,1,2], [6,7,2,1,9,5,3,4,8], [1,9,8,3,4,2,5,6,7],
@@ -119,15 +100,6 @@
             startTimer();
             let board = document.getElementById("sudoku-board");
             board.innerHTML = "";
-            let difficulty = document.getElementById("difficulty").value;
-            let emptyCells = difficulty === "easy" ? 30 : difficulty === "medium" ? 40 : 50;
-            let filledCells = new Set();
-            
-            while (filledCells.size < emptyCells) {
-                let r = Math.floor(Math.random() * 9), c = Math.floor(Math.random() * 9);
-                filledCells.add(`${r}-${c}`);
-            }
-
             for (let i = 0; i < 9; i++) {
                 let row = document.createElement("tr");
                 for (let j = 0; j < 9; j++) {
@@ -139,22 +111,44 @@
                     input.dataset.col = j;
                     input.oninput = function() {
                         this.value = this.value.replace(/[^1-9]/g, "");
-                        if (this.value && this.value != solution[i][j]) {
-                            this.classList.add("incorrect");
-                        } else {
-                            this.classList.remove("incorrect");
-                        }
                     };
-                    
-                    if (filledCells.has(`${i}-${j}`)) {
-                        input.value = solution[i][j];
-                        input.disabled = true;
-                    }
                     cell.appendChild(input);
                     row.appendChild(cell);
                 }
                 board.appendChild(row);
             }
+        }
+
+        function checkSudoku() {
+            let inputs = document.querySelectorAll("input");
+            let isCorrect = true;
+            inputs.forEach(input => {
+                let row = input.dataset.row;
+                let col = input.dataset.col;
+                if (input.value != solution[row][col]) {
+                    isCorrect = false;
+                    input.classList.add("incorrect");
+                } else {
+                    input.classList.remove("incorrect");
+                }
+            });
+            document.getElementById("message").innerText = isCorrect ? "🎉 Correct solution!" : "❌ Some numbers are incorrect.";
+        }
+
+        function getHint() {
+            let emptyCells = Array.from(document.querySelectorAll("input")).filter(input => input.value === "");
+            if (emptyCells.length > 0) {
+                let randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                let row = randomCell.dataset.row;
+                let col = randomCell.dataset.col;
+                randomCell.value = solution[row][col];
+                randomCell.disabled = true;
+            }
+        }
+
+        function resetGame() {
+            generateBoard();
+            document.getElementById("message").innerText = "";
         }
 
         function adjustBackgroundSize(value) {
@@ -163,8 +157,20 @@
             document.getElementById("bg-size").value = value;
         }
 
+        function toggleMusic() {
+            let music = document.getElementById("bg-music");
+            if (music.paused) {
+                music.play();
+            } else {
+                music.pause();
+            }
+        }
+
         generateBoard();
     </script>
+</body>
+</html>
+
 </body>
 </html>
 
