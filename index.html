@@ -41,9 +41,14 @@
             text-align: center;
             font-size: 18px;
             border: none;
+            background-color: white;
+        }
+        input:disabled {
+            background-color: #ddd;
+            font-weight: bold;
         }
         button {
-            margin-top: 10px;
+            margin: 10px;
             padding: 10px;
             font-size: 16px;
             background: #007BFF;
@@ -71,14 +76,11 @@
         <button onclick="resetGame()">Reset</button>
         <button onclick="toggleMusic()">Play/Pause Music</button>
         <p id="message"></p>
-        <label for="bg-size">Adjust Background Size:</label>
-        <input type="range" id="bg-size" min="50" max="200" value="100" oninput="adjustBackgroundSize(this.value)">
-        <input type="number" id="bg-size-manual" min="50" max="200" value="100" oninput="adjustBackgroundSize(this.value)">
     </div>
 
     <!-- Background Music -->
     <audio id="bg-music" loop>
-        <source src="Interstellar Main Theme (online-audio-converter.com).mp3" type="audio/mpeg">
+        <source src="interstellar.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
@@ -158,14 +160,10 @@
             document.getElementById("message").innerText = "";
         }
 
-        function adjustBackgroundSize(value) {
-            document.body.style.backgroundSize = value + "%";
-        }
-
         function toggleMusic() {
             let music = document.getElementById("bg-music");
             if (music.paused) {
-                music.play();
+                music.play().catch(error => console.log("Autoplay blocked:", error));
             } else {
                 music.pause();
             }
@@ -175,3 +173,4 @@
     </script>
 </body>
 </html>
+
