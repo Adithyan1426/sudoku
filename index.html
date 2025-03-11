@@ -10,23 +10,23 @@
             text-align: center;
             background: url('vichu.png') no-repeat center center fixed;
             background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
             height: 100vh;
             margin: 0;
-            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .container {
-            margin: 50px auto;
             padding: 20px;
-            max-width: 500px;
             background: rgba(255, 255, 255, 0.8);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+            max-width: 90%;
         }
         table {
             border-collapse: collapse;
-            margin: 0 auto;
+            margin: 10px auto;
         }
         td {
             width: 40px;
@@ -34,6 +34,12 @@
             text-align: center;
             border: 1px solid #000;
             position: relative;
+        }
+        td:nth-child(3n) {
+            border-right: 2px solid black;
+        }
+        tr:nth-child(3n) td {
+            border-bottom: 2px solid black;
         }
         input {
             width: 38px;
@@ -48,9 +54,9 @@
             font-weight: bold;
         }
         button {
-            margin: 10px;
+            margin: 5px;
             padding: 10px;
-            font-size: 16px;
+            font-size: 14px;
             background: #007BFF;
             color: #fff;
             border: none;
@@ -70,26 +76,28 @@
     <div class="container">
         <h2>Sudoku Game</h2>
         <p>Time: <span id="timer">0:00</span></p>
+        <label>Difficulty:
+            <select id="difficulty" onchange="generateBoard()">
+                <option value="0.5">Easy</option>
+                <option value="0.4" selected>Medium</option>
+                <option value="0.3">Hard</option>
+            </select>
+        </label>
         <table id="sudoku-board"></table>
         <button onclick="checkSudoku()">Check Solution</button>
         <button onclick="getHint()">Get Hint</button>
         <button onclick="resetGame()">Reset</button>
-        <button onclick="toggleMusic()">Play/Pause Music</button>
+        <button onclick="playMusic()">Play Music</button>
+        <button onclick="pauseMusic()">Pause Music</button>
         <p id="message"></p>
     </div>
 
-    <!-- Background Music -->
     <audio id="bg-music" loop>
         <source src="interstellar.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
 
     <script>
-        let solution = [
-            [5,3,4,6,7,8,9,1,2], [6,7,2,1,9,5,3,4,8], [1,9,8,3,4,2,5,6,7],
-            [8,5,9,7,6,1,4,2,3], [4,2,6,8,5,3,7,9,1], [7,1,3,9,2,4,8,5,6],
-            [9,6,1,5,3,7,2,8,4], [2,8,7,4,1,9,6,3,5], [3,4,5,2,8,6,1,7,9]
-        ];
+        let solution = [...Array(9)].map(() => Array(9).fill(0));
         let timer, seconds = 0;
 
         function startTimer() {
@@ -103,8 +111,17 @@
 
         function generateBoard() {
             startTimer();
+            let difficulty = parseFloat(document.getElementById("difficulty").value);
             let board = document.getElementById("sudoku-board");
             board.innerHTML = "";
+            
+            let baseSolution = [
+                [5,3,4,6,7,8,9,1,2], [6,7,2,1,9,5,3,4,8], [1,9,8,3,4,2,5,6,7],
+                [8,5,9,7,6,1,4,2,3], [4,2,6,8,5,3,7,9,1], [7,1,3,9,2,4,8,5,6],
+                [9,6,1,5,3,7,2,8,4], [2,8,7,4,1,9,6,3,5], [3,4,5,2,8,6,1,7,9]
+            ];
+            solution = baseSolution;
+            
             for (let i = 0; i < 9; i++) {
                 let row = document.createElement("tr");
                 for (let j = 0; j < 9; j++) {
@@ -117,7 +134,7 @@
                     input.oninput = function() {
                         this.value = this.value.replace(/[^1-9]/g, "");
                     };
-                    if (Math.random() < 0.4) {
+                    if (Math.random() < difficulty) {
                         input.value = solution[i][j];
                         input.disabled = true;
                     }
@@ -128,49 +145,17 @@
             }
         }
 
-        function checkSudoku() {
-            let inputs = document.querySelectorAll("input");
-            let isCorrect = true;
-            inputs.forEach(input => {
-                let row = input.dataset.row;
-                let col = input.dataset.col;
-                if (!input.disabled && input.value != solution[row][col]) {
-                    isCorrect = false;
-                    input.classList.add("incorrect");
-                } else {
-                    input.classList.remove("incorrect");
-                }
-            });
-            document.getElementById("message").innerText = isCorrect ? "🎉 Correct solution!" : "❌ Some numbers are incorrect.";
+        function playMusic() {
+            document.getElementById("bg-music").play();
         }
 
-        function getHint() {
-            let emptyCells = Array.from(document.querySelectorAll("input:not([disabled])")).filter(input => input.value === "");
-            if (emptyCells.length > 0) {
-                let randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-                let row = randomCell.dataset.row;
-                let col = randomCell.dataset.col;
-                randomCell.value = solution[row][col];
-                randomCell.disabled = true;
-            }
-        }
-
-        function resetGame() {
-            generateBoard();
-            document.getElementById("message").innerText = "";
-        }
-
-        function toggleMusic() {
-            let music = document.getElementById("bg-music");
-            if (music.paused) {
-                music.play().catch(error => console.log("Autoplay blocked:", error));
-            } else {
-                music.pause();
-            }
+        function pauseMusic() {
+            document.getElementById("bg-music").pause();
         }
 
         generateBoard();
     </script>
 </body>
 </html>
+
 
